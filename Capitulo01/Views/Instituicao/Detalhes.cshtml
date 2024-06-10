@@ -1,0 +1,18 @@
+﻿@model Instituicao
+@{
+}
+
+<div class="my-2">
+    <a asp-controller="Instituicao" asp-action="Index">Voltar para a lista</a>
+</div>
+
+<div class="card" style="width: 18rem;">
+    <input type="hidden" asp-for="Id"/>
+    <div class="card-body">
+        <h5 class="card-title">@Html.DisplayFor(model => model.Nome)</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">@Html.DisplayFor(model => model.Endereco)</h6>
+        <p class="card-text">Descrição sobre @Html.DisplayFor(model => model.Nome) no endereço @Html.DisplayFor(model => model.Endereco)</p>
+        @Html.ActionLink("Editar", "Editar", new { id = Model.Id })
+        @Html.ActionLink("Deletar", "Deletar", new { id = Model.Id })
+    </div>
+</div>

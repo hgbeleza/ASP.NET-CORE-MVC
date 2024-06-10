@@ -1,0 +1,17 @@
+﻿@model Departamento
+@{
+}
+
+<div class="my-2">
+    <a asp-controller="Departamento" asp-action="Index">Voltar para a lista</a>
+</div>
+
+<div class="card" style="width: 18rem;">
+    <input type="hidden" asp-for="Id" />
+    <div class="card-body">
+        <h5 class="card-title">@Html.DisplayFor(model => model.Nome)</h5>
+        <p class="card-text">Descrição sobre @Html.DisplayFor(model => model.Nome).</p>
+        @Html.ActionLink("Editar", "Editar", new { id = Model.Id })
+        @Html.ActionLink("Deletar", "DeletarConfirmacao", new { id = Model.Id })
+    </div>
+</div>

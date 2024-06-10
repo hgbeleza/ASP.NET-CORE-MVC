@@ -1,0 +1,18 @@
+﻿@model Departamento
+@{
+}
+
+<div class="my-3">
+    <a class="btn btn-primary" asp-action="Index">Voltar ao início</a>
+</div>
+
+<form asp-action="Editar">
+    <div asp-validation-summary="ModelOnly"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <label for="InputNome" class="form-label">Nome:</label>
+        <input type="text" asp-for="Nome" class="form-control" id="InputNome" placeholder="Digite o nome do departamento">
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Editar" class="btn btn-success">
+</form>

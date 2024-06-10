@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Departamento>
+@{
+}
+
+<div class="my-3">
+    <a asp-action="Criar" class="btn btn-primary">Adicionar novo departamento</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table" id="table-departamentos">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var departamento in Model)
+            {
+                <tr>
+                    <th scope="row">@departamento.Id</th>
+                    <td>@departamento.Nome</td>
+                    <td>
+                        <a class="btn btn-primary me-2" asp-route-id="@departamento.Id" asp-controller="Departamento" asp-action="Detalhes">Ver detalhes</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

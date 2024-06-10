@@ -1,0 +1,145 @@
+﻿using Capitulo01.Data;
+using Capitulo01.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace Capitulo01.Controllers
+{
+    public class DepartamentoController : Controller
+    {
+        private readonly IESContext _esContext;
+
+        public DepartamentoController(IESContext esContext)
+        {
+            _esContext = esContext;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await _esContext.Departamentos.OrderBy(d => d.Nome).ToListAsync());
+        }
+
+        public IActionResult Criar()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Criar(Departamento departamento)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _esContext.Add(departamento);
+                    await _esContext.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                ModelState.AddModelError("", "Não foi possível inserir os dados.");
+            }
+            return View(departamento);
+        }
+
+        public async Task<IActionResult> Editar(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var departamento = await _esContext.Departamentos.Where(d => d.Id == id).FirstOrDefaultAsync();
+
+            if (departamento == null)
+            {
+                return NotFound();
+            }
+
+            return View(departamento);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Editar(int id, Departamento departamento)
+        {
+            if (id != departamento.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _esContext.Update(departamento);
+                    await _esContext.SaveChangesAsync();
+                }
+                catch(DbUpdateConcurrencyException)
+                {
+                    if (!DepartamentoExists(departamento.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(departamento);
+        }
+
+        public async Task<IActionResult> Detalhes(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var departamento = await _esContext.Departamentos.SingleOrDefaultAsync(d => d.Id == id);
+            
+            if (departamento == null)
+            {
+                return NotFound();
+            }
+
+            return View(departamento);
+        }
+
+        public async Task<IActionResult> DeletarConfirmacao(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var departamento = await _esContext.Departamentos.SingleOrDefaultAsync(d => d.Id == id);
+            if (departamento == null)
+            {
+                return NotFound();
+            }
+
+            return View(departamento);
+        }
+
+        [HttpPost, ActionName("Deletar")]
+        public async Task<IActionResult> Deletar(int id)
+        {
+            var departamento = await _esContext.Departamentos.SingleOrDefaultAsync(de => de.Id == id);
+            if (departamento == null)
+            {
+                return NotFound();
+            }
+            _esContext.Departamentos.Remove(departamento);
+            await _esContext.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool DepartamentoExists(int id)
+        {
+            return _esContext.Departamentos.Any(d => d.Id == id);
+        }
+    }
+}

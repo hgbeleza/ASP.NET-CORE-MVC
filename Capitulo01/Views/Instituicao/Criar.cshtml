@@ -1,0 +1,25 @@
+﻿@model Instituicao
+@{
+    ViewData["Title"] = "Criar instituição";
+}
+
+<div class="my-3">
+    <a class="btn btn-primary" asp-action="Index">Voltar ao início</a>
+</div>
+
+<form asp-action="Criar">
+    
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3">
+        <label for="InputNome" class="form-label">Nome:</label>
+        <input type="text" asp-for="Nome" class="form-control" id="InputNome" placeholder="Digite o nome da instituição">
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="InputEndereco" class="form-label">Endereço:</label>
+        <input type="text" asp-for="Endereco" class="form-control" id="InputEndereco" placeholder="Digite o endereço da instituição">
+        <span asp-validation-for="Endereco" class="text-danger"></span>
+    </div>
+    <input type="submit" value="Create" class="btn btn-success">
+    
+</form>
