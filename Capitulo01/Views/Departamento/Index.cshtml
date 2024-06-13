@@ -12,6 +12,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Nome</th>
+                <th scope="col">Instituição</th>
                 <th scope="col">Ações</th>
             </tr>
         </thead>
@@ -21,6 +22,7 @@
                 <tr>
                     <th scope="row">@departamento.Id</th>
                     <td>@departamento.Nome</td>
+                    <td>@departamento.Instituicao.Nome</td>
                     <td>
                         <a class="btn btn-primary me-2" asp-route-id="@departamento.Id" asp-controller="Departamento" asp-action="Detalhes">Ver detalhes</a>
                     </td>

@@ -9,9 +9,30 @@
 <div class="card" style="width: 18rem;">
     <input type="hidden" asp-for="Id" />
     <div class="card-body">
-        <h5 class="card-title">@Html.DisplayFor(model => model.Nome)</h5>
-        <p class="card-text">Descrição sobre @Html.DisplayFor(model => model.Nome).</p>
-        @Html.ActionLink("Editar", "Editar", new { id = Model.Id })
-        @Html.ActionLink("Deletar", "DeletarConfirmacao", new { id = Model.Id })
+        <h5 class="card-title">Detalhes sobre @Html.DisplayFor(model => model.Nome)</h5>
+        
+        <div class="mb-3">
+            <label for="basic-url" class="form-label">InstituiçãoId:</label>
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon3">@Html.DisplayFor(model => model.InstituicaoId)</span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="basic-url" class="form-label">Nome da instituição:</label>
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon3">@Html.DisplayFor(model => model.Instituicao.Nome)</span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="basic-url" class="form-label">Endereço:</label>
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon3">@Html.DisplayFor(model => model.Instituicao.Endereco)</span>
+            </div>
+        </div>
+
+        <a class="btn btn-primary" asp-controller="Departamento" asp-action="Editar" asp-route-id="@Model.Id">Editar</a>
+        <a class="btn btn-danger" asp-controller="Departamento" asp-action="DeletarConfirmacao" asp-route-id="@Model.Id">Excluir</a>
     </div>
 </div>

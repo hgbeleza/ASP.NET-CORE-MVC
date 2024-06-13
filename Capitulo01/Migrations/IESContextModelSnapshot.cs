@@ -29,11 +29,16 @@ namespace Capitulo01.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("InstituicaoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InstituicaoId");
 
                     b.ToTable("Departamentos");
                 });
@@ -57,6 +62,22 @@ namespace Capitulo01.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Instituicoes");
+                });
+
+            modelBuilder.Entity("Capitulo01.Models.Departamento", b =>
+                {
+                    b.HasOne("Capitulo01.Models.Instituicao", "Instituicao")
+                        .WithMany("Departamentos")
+                        .HasForeignKey("InstituicaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Instituicao");
+                });
+
+            modelBuilder.Entity("Capitulo01.Models.Instituicao", b =>
+                {
+                    b.Navigation("Departamentos");
                 });
 #pragma warning restore 612, 618
         }

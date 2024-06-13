@@ -1,6 +1,7 @@
 ﻿using Capitulo01.Data;
 using Capitulo01.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Capitulo01.Controllers
@@ -16,49 +17,56 @@ namespace Capitulo01.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _esContext.Departamentos.OrderBy(d => d.Nome).ToListAsync());
+            return View(await _esContext.Departamentos.Include(i => i.Instituicao).OrderBy(d => d.Id).ToListAsync());
         }
 
         public IActionResult Criar()
         {
+            var instituicoes = _esContext.Instituicoes.OrderBy(i => i.Id).ToList();
+            instituicoes.Insert(0, new Instituicao() { Id = 0, Nome = "Selecione a instituição" });
+            ViewBag.Instituicoes = instituicoes;
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Criar(Departamento departamento)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     _esContext.Add(departamento);
                     await _esContext.SaveChangesAsync();
-                    return RedirectToAction("Index");
+                    return RedirectToAction(nameof(Index));
                 }
             }
-            catch(DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Não foi possível inserir os dados.");
             }
             return View(departamento);
         }
 
-        public async Task<IActionResult> Editar(int id)
+        public async Task<IActionResult> Editar(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var departamento = await _esContext.Departamentos.Where(d => d.Id == id).FirstOrDefaultAsync();
+            var departamento = await _esContext.Departamentos.SingleOrDefaultAsync(de => de.Id == id);
 
             if (departamento == null)
             {
                 return NotFound();
             }
 
+            ViewBag.Instituicoes = new SelectList(_esContext.Instituicoes.OrderBy(i => i.Id), "Id", "Nome", departamento.InstituicaoId);
+
             return View(departamento);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Editar(int id, Departamento departamento)
@@ -68,7 +76,7 @@ namespace Capitulo01.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
@@ -99,7 +107,8 @@ namespace Capitulo01.Controllers
             }
 
             var departamento = await _esContext.Departamentos.SingleOrDefaultAsync(d => d.Id == id);
-            
+            _esContext.Instituicoes.Where(i => i.Id == departamento.InstituicaoId).Load();
+
             if (departamento == null)
             {
                 return NotFound();

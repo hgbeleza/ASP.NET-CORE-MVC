@@ -1,10 +1,14 @@
-﻿using Capitulo01.Models;
+﻿using Capitulo01.Data;
+using Capitulo01.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Capitulo01.Controllers
 {
     public class InstituicaoController : Controller
     {
+        private readonly IESContext _esContext;
+
         private static IList<Instituicao> instituicoes = new List<Instituicao>()
         {
             new Instituicao()
@@ -39,9 +43,14 @@ namespace Capitulo01.Controllers
             },
         };
 
-        public IActionResult Index()
+        public InstituicaoController(IESContext esContext)
         {
-            return View(instituicoes);
+            _esContext = esContext;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await _esContext.Instituicoes.OrderBy(i => i.Id).ToListAsync());
         }
 
         public ActionResult Criar()
@@ -50,11 +59,22 @@ namespace Capitulo01.Controllers
         }
 
         [HttpPost]
-        public ActionResult Criar(Instituicao instituicao)
+        public async Task<IActionResult> Criar(Instituicao instituicao)
         {
-            instituicoes.Add(instituicao);
-            instituicao.Id = instituicoes.Select(i => i.Id).Max() + 1;
-            return RedirectToAction("Index");
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    _esContext.Add(instituicao);
+                    await _esContext.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                ModelState.AddModelError("", "Não foi possível inserir os dados.");
+            }
+            return View(instituicao);
         }
 
         public IActionResult Editar(int id)

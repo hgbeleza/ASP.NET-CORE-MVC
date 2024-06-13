@@ -4,5 +4,7 @@
     {
         public int Id { get; set; }
         public string Nome { get; set; }
+        public int? InstituicaoId { get; set; }
+        public Instituicao Instituicao { get; set; }
     }
 }
